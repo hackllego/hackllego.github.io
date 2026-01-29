@@ -306,7 +306,7 @@
       ptlabLinkEl.href = `https://pentesterlab.com/profile/${pentesterlabUser}`;
 
       const ptlabHtmlUrl = pentesterlabProxy
-        ? `${pentesterlabProxy}${encodeURIComponent(pentesterlabHtmlUrl)}`
+        ? `${pentesterlabProxy}${pentesterlabHtmlUrl}`
         : pentesterlabHtmlUrl;
 
       const normalizePtlabUrl = (url) => {
@@ -375,7 +375,7 @@
       };
 
       const ptlabJsonUrl = pentesterlabProxy
-        ? `${pentesterlabProxy}${encodeURIComponent(pentesterlabJsonUrl)}`
+        ? `${pentesterlabProxy}${pentesterlabJsonUrl}`
         : pentesterlabJsonUrl;
 
       fetch(ptlabJsonUrl)
