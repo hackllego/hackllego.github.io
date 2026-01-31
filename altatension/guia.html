@@ -30,11 +30,20 @@
       margin:0;
       font-family:var(--mono);
       color:var(--ink);
+      background:#0b1211;
+      line-height:1.3;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
       background:
         radial-gradient(700px 500px at 10% -10%, rgba(127,215,166,.25), transparent 60%),
         radial-gradient(900px 600px at 100% 0%, rgba(241,192,90,.18), transparent 62%),
         linear-gradient(180deg, #0c1110 0%, #0b1211 100%);
-      line-height:1.3;
+      background-repeat:no-repeat;
+      background-size:100% 100%, 100% 100%, cover;
     }
 
     .wrap{max-width:980px; margin:0 auto; padding:18px 16px 140px}
@@ -131,8 +140,21 @@
     .node.warn{border-color:rgba(241,192,90,.6)}
     .node.bad{border-color:rgba(239,123,123,.6)}
 
-    .arrow{height:14px; display:flex; align-items:center; justify-content:center; color:rgba(169,184,177,.9)}
-    .arrow::before{content:"v"; font-size:12px}
+    .arrow{
+      height:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(169,184,177,.9);
+    }
+    .arrow::before{
+      content:"";
+      width:18px;
+      height:18px;
+      background-repeat:no-repeat;
+      background-size:18px 18px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 10l6 6 6-6' stroke='%23a9b8b1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
 
     .split{display:grid; gap:10px}
     @media (min-width:560px){ .split{grid-template-columns:1fr 1fr} }
@@ -196,8 +218,15 @@
       display:inline-flex; align-items:center; gap:6px;
       padding:2px 8px; border-radius:999px;
       border:1px solid rgba(33,48,44,.7); font-size:11px; color:var(--muted);
-      margin-right:6px;
+      white-space:nowrap;
+      flex:0 0 auto;
     }
+    .slot-bar{
+      display:flex; gap:6px; flex-wrap:nowrap; align-items:center;
+      overflow-x:auto; -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .slot-bar::-webkit-scrollbar{display:none}
     .slot-led{
       width:8px; height:8px; border-radius:50%;
       background:rgba(33,48,44,.9); box-shadow:inset 0 0 0 1px rgba(33,48,44,.8);
@@ -298,7 +327,7 @@
   <section class="card" style="--d:.05s">
     <div class="hd">
       <div>
-        <h2>Preparacion de la partida (checklist visual)</h2>
+        <h2>Preparacion de la partida</h2>
         <p>Todo lo necesario para empezar sin errores.</p>
       </div>
       <span class="badge">Setup</span>
@@ -507,7 +536,7 @@
       <div class="panel">
         <h3>Flujo resumido</h3>
         <div class="flow">
-          <div class="node"><div class="t">Inicio de fase</div><div class="d">Coloca la ficha de descuento en la central mas barata (puja minima 1).</div></div>
+          <div class="node"><div class="t">Inicio de fase</div><div class="d" id="fase2Inicio">Coloca la ficha de descuento en la central mas barata (puja minima 1).</div></div>
           <div class="arrow"></div>
           <div class="node"><div class="t">Turno del jugador</div><div class="d">Elige iniciar una subasta o pasar.</div></div>
           <div class="arrow"></div>
@@ -584,9 +613,11 @@
           </div>
           <div class="arrow"></div>
           <div class="node"><div class="t">Coste de hueco</div><div class="d">
-            <span class="slot-chip" data-step="1"><span class="slot-led" aria-hidden="true"></span>Paso 1 · 10</span>
-            <span class="slot-chip" data-step="2"><span class="slot-led" aria-hidden="true"></span>Paso 2 · 15</span>
-            <span class="slot-chip" data-step="3"><span class="slot-led" aria-hidden="true"></span>Paso 3 · 20</span>
+            <span class="slot-bar" aria-label="Coste por paso">
+              <span class="slot-chip" data-step="1"><span class="slot-led" aria-hidden="true"></span>Paso 1 · 10</span>
+              <span class="slot-chip" data-step="2"><span class="slot-led" aria-hidden="true"></span>Paso 2 · 15</span>
+              <span class="slot-chip" data-step="3"><span class="slot-led" aria-hidden="true"></span>Paso 3 · 20</span>
+            </span>
           </div></div>
           <div class="arrow"></div>
           <div class="node"><div class="t">Actualiza marcador</div><div class="d">Sube tu casa en el marcador de ciudades.</div></div>
@@ -661,31 +692,6 @@
     </div>
   </section>
 
-  <section class="card" style="--d:.4s">
-    <div class="hd">
-      <div>
-        <h2>Notas del mapa de Estados Unidos</h2>
-        <p>Reglas especiales del tablero USA.</p>
-      </div>
-      <span class="badge">EE. UU.</span>
-    </div>
-    <div class="bd">
-      <div class="grid">
-        <div class="panel">
-          <h3>Reglas especiales</h3>
-          <div class="stack">
-            <div class="node"><div class="t">Carbon siempre a 8 electros</div><div class="d">Precio estable segun reglamento.</div></div>
-            <div class="node"><div class="t">Carbon usado al almacen</div><div class="d">No vuelve al mercado.</div></div>
-          </div>
-        </div>
-        <div class="panel">
-          <h3>Recordatorio</h3>
-          <div class="node"><div class="t">Todo lo demas igual</div><div class="d">Zonas, pasos, umbrales y reposicion siguen la tabla base.</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="card" style="--d:.45s">
     <div class="hd">
       <div>
@@ -718,6 +724,31 @@
           <div class="node good"><div class="t">Gana quien abastece mas ciudades</div><div class="d">Se compara capacidad de abastecimiento.</div></div>
           <div class="arrow"></div>
           <div class="node warn"><div class="t">Empate</div><div class="d">Gana quien tenga mas electros restantes.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.5s">
+    <div class="hd">
+      <div>
+        <h2>Notas del mapa de Estados Unidos</h2>
+        <p>Reglas especiales del tablero USA.</p>
+      </div>
+      <span class="badge">EE. UU.</span>
+    </div>
+    <div class="bd">
+      <div class="grid">
+        <div class="panel">
+          <h3>Reglas especiales</h3>
+          <div class="stack">
+            <div class="node"><div class="t">Carbon siempre a 8 electros</div><div class="d">Precio estable segun reglamento.</div></div>
+            <div class="node"><div class="t">Carbon usado al almacen</div><div class="d">No vuelve al mercado.</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Recordatorio</h3>
+          <div class="node"><div class="t">Todo lo demas igual</div><div class="d">Zonas, pasos, umbrales y reposicion siguen la tabla base.</div></div>
         </div>
       </div>
     </div>
@@ -773,6 +804,7 @@
   const endCitiesAlert = document.getElementById('endCitiesAlert');
   const slotChips = Array.from(document.querySelectorAll('.slot-chip'));
   const reorgText = document.getElementById('reorgText');
+  const fase2Inicio = document.getElementById('fase2Inicio');
 
   const coalVal = document.getElementById('coalVal');
   const oilVal = document.getElementById('oilVal');
@@ -839,6 +871,13 @@
         reorgText.textContent = 'Se retira la central mas barata del mercado actual y se reemplaza (si queda mazo).';
       }else{
         reorgText.textContent = 'La central mas cara del mercado futuro va al fondo; se roba una nueva para el futuro y otra sube al mercado actual.';
+      }
+    }
+    if(fase2Inicio){
+      if(step === 3){
+        fase2Inicio.textContent = 'Paso 3: no hay ficha de descuento; el mercado queda en 6 centrales disponibles.';
+      }else{
+        fase2Inicio.textContent = 'Coloca la ficha de descuento en la central mas barata (puja minima 1).';
       }
     }
     updateRepl(Number(playersSel.value), step);
