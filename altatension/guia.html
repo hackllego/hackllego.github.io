@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Alta Tension - Manual visual por pasos</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Sans:wght@300;400;600&display=swap");
+
+    :root{
+      --bg:#0d1412;
+      --ink:#ecf3ef;
+      --muted:#a9b8b1;
+      --card:#121c1a;
+      --card2:#0f1716;
+      --line:#21302c;
+      --accent:#7fd7a6;
+      --accent2:#f1c05a;
+      --danger:#ef7b7b;
+      --shadow:0 18px 40px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius2:12px;
+      --mono:"IBM Plex Sans", system-ui, sans-serif;
+      --display:"Bebas Neue", "Impact", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--mono);
+      color:var(--ink);
+      background:
+        radial-gradient(700px 500px at 10% -10%, rgba(127,215,166,.25), transparent 60%),
+        radial-gradient(900px 600px at 100% 0%, rgba(241,192,90,.18), transparent 62%),
+        linear-gradient(180deg, #0c1110 0%, #0b1211 100%);
+      line-height:1.3;
+    }
+
+    .wrap{max-width:980px; margin:0 auto; padding:18px 16px 140px}
+
+    header{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px) saturate(1.1);
+      background:linear-gradient(180deg, rgba(11,16,15,.92), rgba(11,16,15,.6));
+      border-bottom:1px solid rgba(33,48,44,.8);
+    }
+
+    .top{
+      max-width:980px; margin:0 auto; padding:14px 16px 10px;
+      display:flex; flex-direction:column; gap:10px;
+    }
+
+    .title{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .title h1{margin:0; font-family:var(--display); font-size:26px; letter-spacing:.5px}
+    .title p{margin:0; color:var(--muted); font-size:12px}
+
+    .selectors{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(33,48,44,.8);
+      background:rgba(18,28,26,.9);
+      color:var(--muted); font-size:12px;
+    }
+    .chip select{
+      background:transparent; color:var(--ink); border:none; outline:none; font-size:12px;
+    }
+
+    .seg{
+      display:inline-flex; gap:6px; padding:6px; border-radius:999px;
+      border:1px solid rgba(33,48,44,.8); background:rgba(18,28,26,.9);
+    }
+    .seg button{
+      border:none; cursor:pointer; border-radius:999px;
+      padding:6px 10px; font-size:12px; color:var(--muted); background:transparent;
+    }
+    .seg button.active{background:rgba(127,215,166,.2); color:var(--ink); border:1px solid rgba(127,215,166,.7)}
+
+    .card{
+      background:linear-gradient(180deg, rgba(18,28,26,.96), rgba(15,23,22,.92));
+      border:1px solid rgba(33,48,44,.75);
+      border-radius:var(--radius); box-shadow:var(--shadow);
+      overflow:hidden;
+      animation:enter .6s ease both; animation-delay:var(--d, 0s);
+    }
+    .card + .card{margin-top:14px}
+
+    @keyframes enter{
+      from{opacity:0; transform:translateY(12px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    .hd{
+      padding:14px 16px 10px; border-bottom:1px solid rgba(33,48,44,.6);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      background:rgba(15,23,22,.65);
+    }
+    .hd h2{margin:0; font-size:14px; font-weight:600; letter-spacing:.3px}
+    .hd p{margin:6px 0 0; color:var(--muted); font-size:12px}
+    .badge{
+      font-size:12px; padding:6px 10px; border-radius:999px; color:var(--muted);
+      border:1px solid rgba(33,48,44,.8); background:rgba(18,28,26,.8);
+      white-space:nowrap;
+    }
+
+    .bd{padding:14px 16px}
+    .grid{display:grid; grid-template-columns:1fr; gap:12px}
+    @media (min-width:760px){ .grid{grid-template-columns:1.2fr .8fr} }
+
+    .panel{
+      background:rgba(15,23,22,.6);
+      border:1px solid rgba(33,48,44,.6);
+      border-radius:var(--radius2);
+      padding:12px;
+    }
+    .panel h3{margin:0 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.25px; color:var(--muted)}
+
+    .flow{display:grid; gap:10px}
+    .node{
+      padding:10px 12px; border-radius:14px;
+      border:1px solid rgba(33,48,44,.7); background:rgba(18,28,26,.6);
+    }
+    .node .t{font-weight:600; font-size:13px}
+    .node .d{margin-top:6px; font-size:12px; color:var(--muted)}
+    .node.good{border-color:rgba(127,215,166,.6)}
+    .node.warn{border-color:rgba(241,192,90,.6)}
+    .node.bad{border-color:rgba(239,123,123,.6)}
+
+    .arrow{height:14px; display:flex; align-items:center; justify-content:center; color:rgba(169,184,177,.9)}
+    .arrow::before{content:"v"; font-size:12px}
+
+    .split{display:grid; gap:10px}
+    @media (min-width:560px){ .split{grid-template-columns:1fr 1fr} }
+
+    table{width:100%; border-collapse:separate; border-spacing:0; border-radius:12px; overflow:hidden; border:1px solid rgba(33,48,44,.75)}
+    th,td{padding:9px 10px; font-size:12px; border-bottom:1px solid rgba(33,48,44,.55)}
+    th{background:rgba(18,28,26,.8); color:var(--muted); text-align:left; text-transform:uppercase; letter-spacing:.3px}
+    tr:last-child td{border-bottom:none}
+    tr.active td{background:rgba(127,215,166,.1)}
+
+    .pill{
+      display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px;
+      border:1px solid rgba(33,48,44,.7); font-size:11px; color:var(--muted);
+    }
+
+    .step-card{display:none}
+    .step-card.active{display:block}
+
+    .stack{display:grid; gap:8px}
+    .k{font-weight:600; color:var(--ink)}
+
+    .footer-note{
+      margin-top:12px; padding:10px 12px; border:1px dashed rgba(33,48,44,.8);
+      border-radius:12px; font-size:12px; color:var(--muted); background:rgba(18,28,26,.35);
+    }
+
+    .phase-grid{display:grid; gap:10px}
+    .phase{
+      display:grid; grid-template-columns:48px 1fr; gap:10px; align-items:start;
+      border:1px solid rgba(33,48,44,.6); border-radius:14px; padding:10px 12px;
+      background:rgba(18,28,26,.55);
+    }
+    .phase .num{
+      width:38px; height:38px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      font-family:var(--display); font-size:18px; color:var(--ink);
+      background:rgba(127,215,166,.18); border:1px solid rgba(127,215,166,.6);
+    }
+    .phase .t{font-weight:600; font-size:13px}
+    .phase .d{margin-top:4px; font-size:12px; color:var(--muted)}
+
+    .sticky-hint{
+      position:fixed; left:50%; bottom:74px; transform:translateX(-50%);
+      background:rgba(18,28,26,.95); border:1px solid rgba(33,48,44,.7);
+      border-radius:999px; padding:8px 12px; font-size:12px; color:var(--muted);
+      box-shadow:var(--shadow); display:none;
+    }
+    body.show-hint .sticky-hint{display:block}
+
+    .phase-nav{
+      display:flex; gap:8px; align-items:center; flex-wrap:nowrap; overflow:auto;
+      padding-bottom:2px;
+    }
+    .phase-nav a{
+      flex:0 0 auto; text-decoration:none; color:var(--ink);
+      font-size:12px; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(33,48,44,.7); background:rgba(18,28,26,.85);
+    }
+
+    .slot-chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:2px 8px; border-radius:999px;
+      border:1px solid rgba(33,48,44,.7); font-size:11px; color:var(--muted);
+      margin-right:6px;
+    }
+    .slot-led{
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(33,48,44,.9); box-shadow:inset 0 0 0 1px rgba(33,48,44,.8);
+    }
+    .slot-chip.active{
+      color:var(--ink); border-color:rgba(127,215,166,.7); background:rgba(127,215,166,.12);
+    }
+    .slot-chip.active .slot-led{
+      background:#7fd7a6; box-shadow:0 0 8px rgba(127,215,166,.75), 0 0 2px rgba(127,215,166,.9);
+    }
+
+    .dock{
+      position:fixed; left:0; right:0; bottom:0; z-index:12;
+      padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+      background:linear-gradient(180deg, rgba(11,16,15,.2), rgba(11,16,15,.95));
+      border-top:1px solid rgba(33,48,44,.7);
+      backdrop-filter: blur(12px) saturate(1.1);
+    }
+    .dock .selectors{justify-content:center}
+    .dock .chip{background:rgba(15,23,22,.85)}
+    .dock .seg button{font-size:12px}
+    @media (min-width:900px){
+      .dock{left:50%; transform:translateX(-50%); max-width:980px; border-radius:16px 16px 0 0}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="title">
+      <div>
+        <h1>Alta Tension - Manual visual por pasos</h1>
+        <p>Usa los selectores para ver lo que importa en el momento.</p>
+      </div>
+      <div class="pill">Manual rapido</div>
+    </div>
+    <div class="selectors">
+      <label class="chip">Jugadores
+        <select id="playersSel">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+      <div class="chip">Paso actual</div>
+      <div class="seg" id="stepSeg">
+        <button data-step="1" class="active">Paso 1</button>
+        <button data-step="2">Paso 2</button>
+        <button data-step="3">Paso 3</button>
+      </div>
+      <nav class="phase-nav" aria-label="Ir a fase">
+        <a href="#fase1">Fase 1</a>
+        <a href="#fase2">Fase 2</a>
+        <a href="#fase3">Fase 3</a>
+        <a href="#fase4">Fase 4</a>
+        <a href="#fase5">Fase 5</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" style="--d:0s">
+    <div class="hd">
+      <div>
+        <h2>Como usar este manual</h2>
+        <p>Primero elige jugadores y paso. Luego recorre las fases con sus alertas.</p>
+      </div>
+      <span class="badge">Inicio</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Vista rapida</h3>
+        <div class="stack">
+          <div class="node"><div class="t">1) Ajusta Jugadores</div><div class="d">Cambia zonas, umbrales y tablas.</div></div>
+          <div class="node"><div class="t">2) Ajusta Paso</div><div class="d">Muestra reglas activas y costos.</div></div>
+          <div class="node"><div class="t">3) Juega por fases</div><div class="d">Las alertas indican cambios de paso.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Resumen por pasos</h3>
+        <div class="step-card" data-step="1">
+          <div class="node good"><div class="t">Paso 1</div><div class="d">1 casa por ciudad. Costo de hueco: 10.</div></div>
+        </div>
+        <div class="step-card" data-step="2">
+          <div class="node warn"><div class="t">Paso 2</div><div class="d">2 casas por ciudad. Segunda casa: 15. Se elimina la central mas barata al entrar.</div></div>
+        </div>
+        <div class="step-card" data-step="3">
+          <div class="node bad"><div class="t">Paso 3</div><div class="d">3 casas por ciudad. Tercera casa: 20. Solo 6 centrales disponibles.</div></div>
+        </div>
+        <div class="footer-note">Paso 3 comienza cuando se roba la carta "Paso 3".</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.05s">
+    <div class="hd">
+      <div>
+        <h2>Preparacion de la partida (checklist visual)</h2>
+        <p>Todo lo necesario para empezar sin errores.</p>
+      </div>
+      <span class="badge">Setup</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Checklist</h3>
+        <div class="flow">
+          <div class="node"><div class="t">1) Tablero y zonas</div><div class="d">Tablero doble cara. Se divide en 6 zonas de 7 ciudades.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">2) Zona de juego</div><div class="d">Elige zonas segun jugadores.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">3) Componentes por jugador</div><div class="d">22 casas + 50 electros + 1 tarjeta de Ganancias.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">4) Marcadores</div><div class="d">Cada jugador coloca 1 casa en el espacio 0.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">5) Orden inicial</div><div class="d">Se determina al azar.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">6) Mercado inicial de recursos</div><div class="d">Rellena casillas iniciales del tablero.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">7) Mercado inicial de centrales</div><div class="d">Prepara cartas segun jugadores.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">8) Componentes especiales</div><div class="d">Martillo, ficha de descuento y barreras.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">9) Variante opcional</div><div class="d">Ciudades de inicio (si la usan).</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Contenido de la caja</h3>
+        <div class="stack">
+          <div class="node"><div class="t">Tablero doble cara</div><div class="d">Alemania / Estados Unidos.</div></div>
+          <div class="node"><div class="t">Casas</div><div class="d">132 casas de madera (22 por jugador).</div></div>
+          <div class="node"><div class="t">Recursos</div><div class="d">84 fichas: 24 carbon, 24 petroleo, 24 basura, 12 uranio.</div></div>
+          <div class="node"><div class="t">Dinero</div><div class="d">40x1, 15x5, 40x10, 25x50.</div></div>
+          <div class="node"><div class="t">Cartas</div><div class="d">54 en total (centrales, Paso 3, reponer, ganancias).</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.1s">
+    <div class="hd">
+      <div>
+        <h2>Zonas y umbrales segun jugadores</h2>
+        <p>Se actualiza con el selector de jugadores.</p>
+      </div>
+      <span class="badge">Dinamico</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Zonas activas</h3>
+        <table>
+          <thead>
+            <tr><th>Jugadores</th><th>Zonas</th></tr>
+          </thead>
+          <tbody id="zonesTable">
+            <tr data-p="2"><td>2</td><td>3</td></tr>
+            <tr data-p="3"><td>3</td><td>3</td></tr>
+            <tr data-p="4"><td>4</td><td>4</td></tr>
+            <tr data-p="5"><td>5</td><td>5</td></tr>
+            <tr data-p="6"><td>6</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>Umbrales clave</h3>
+        <div class="stack">
+          <div class="node warn"><div class="t">Paso 2 puede entrar</div><div class="d">Si alguien alcanza <span class="k" id="step2Cities">7</span> ciudades.</div></div>
+          <div class="node bad"><div class="t">Fin de partida</div><div class="d">Se comprueba al alcanzar <span class="k" id="endCities">17</span> ciudades.</div></div>
+        </div>
+        <div class="footer-note">El cambio a Paso 2 se aplica al inicio de Fase 5.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.15s">
+    <div class="hd">
+      <div>
+        <h2>Mercados iniciales</h2>
+        <p>Recursos y centrales listos antes de empezar la primera ronda.</p>
+      </div>
+      <span class="badge">Setup</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Mercado inicial de recursos (Alemania / EE. UU.)</h3>
+        <table>
+          <thead>
+            <tr><th>Recurso</th><th>Casillas iniciales</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Carbon</td><td>1-8</td></tr>
+            <tr><td>Petroleo</td><td>3-8</td></tr>
+            <tr><td>Basura</td><td>6-8</td></tr>
+            <tr><td>Uranio</td><td>14-16</td></tr>
+          </tbody>
+        </table>
+        <div class="footer-note">El resto de fichas queda en la reserva.</div>
+      </div>
+      <div class="panel">
+        <h3>Preparacion del mercado de centrales</h3>
+        <table>
+          <thead>
+            <tr><th>Jugadores</th><th>Oscura</th><th>Clara</th></tr>
+          </thead>
+          <tbody id="marketTable">
+            <tr data-p="2"><td>2</td><td>1</td><td>5</td></tr>
+            <tr data-p="3"><td>3</td><td>2</td><td>6</td></tr>
+            <tr data-p="4"><td>4</td><td>1</td><td>3</td></tr>
+            <tr data-p="5"><td>5-6</td><td>Ninguna</td><td>Ninguna</td></tr>
+            <tr data-p="6"><td>5-6</td><td>Ninguna</td><td>Ninguna</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.2s">
+    <div class="hd">
+      <div>
+        <h2>Ronda de juego: 5 fases</h2>
+        <p>Flujo general para orientarse rapido en la mesa.</p>
+      </div>
+      <span class="badge">Ronda</span>
+    </div>
+    <div class="bd">
+      <div class="phase-grid">
+        <div class="phase">
+          <div class="num">1</div>
+          <div>
+            <div class="t">Orden de juego</div>
+            <div class="d">Define el orden para el resto de fases.</div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="num">2</div>
+          <div>
+            <div class="t">Subasta de centrales</div>
+            <div class="d">Compra de centrales (si aplica).</div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="num">3</div>
+          <div>
+            <div class="t">Compra de recursos</div>
+            <div class="d">Adquiere recursos necesarios.</div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="num">4</div>
+          <div>
+            <div class="t">Construccion</div>
+            <div class="d">Conecta ciudades y actualiza marcador.</div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="num">5</div>
+          <div>
+            <div class="t">Burocracia</div>
+            <div class="d">Ganancias, reponer recursos y actualizar mercado.</div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">Las alertas de cambio de paso estan integradas en Fase 4 y Fase 5.</div>
+    </div>
+  </section>
+
+  <section class="card" id="fase1" style="--d:.25s">
+    <div class="hd">
+      <div>
+        <h2>Fase 1 · Orden de juego</h2>
+        <p>Reordena los jugadores y fija el turno para toda la ronda.</p>
+      </div>
+      <span class="badge">Fase 1</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Que hacer</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Cuenta ciudades conectadas</div><div class="d">Mas ciudades = turno antes.</div></div>
+          <div class="arrow"></div>
+          <div class="node warn"><div class="t">Empate</div><div class="d">Gana quien tenga la central de mayor valor.</div></div>
+          <div class="arrow"></div>
+          <div class="node good"><div class="t">Coloca casas en el orden</div><div class="d">Fila superior para el orden actual de la ronda.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Como afecta a la ronda</h3>
+        <div class="stack">
+          <div class="node"><div class="t">Fase 2</div><div class="d">Se juega en el orden de juego (primero al ultimo).</div></div>
+          <div class="node"><div class="t">Fase 3 y 4</div><div class="d">Se juega en orden inverso (ultimo al primero).</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fase2" style="--d:.3s">
+    <div class="hd">
+      <div>
+        <h2>Fase 2 · Subasta de centrales</h2>
+        <p>Compra de centrales con subasta en orden de juego.</p>
+      </div>
+      <span class="badge">Fase 2</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Flujo resumido</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Inicio de fase</div><div class="d">Coloca la ficha de descuento en la central mas barata (puja minima 1).</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Turno del jugador</div><div class="d">Elige iniciar una subasta o pasar.</div></div>
+          <div class="arrow"></div>
+          <div class="split">
+            <div class="node good"><div class="t">Subastar</div><div class="d">Elige 1 central del mercado actual, abre puja y el ganador paga y la obtiene.</div></div>
+            <div class="node bad"><div class="t">Pasar</div><div class="d">No puja ni compra centrales en esta ronda.</div></div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Limite</div><div class="d">Maximo 1 central por jugador y ronda.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Mercado de centrales</h3>
+        <div class="stack">
+          <div class="node"><div class="t">Solo mercado actual</div><div class="d">Se subastan las 4 centrales visibles mas baratas.</div></div>
+          <div class="node warn"><div class="t">Paso 3</div><div class="d">Solo quedan 6 centrales disponibles (no hay mercado futuro).</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Alerta de cambio de paso</h3>
+        <div class="flow">
+          <div class="node warn"><div class="t">Posible Paso 3 en Fase 2</div><div class="d">Si al reponer aparece la carta "Paso 3": se retira y tambien la central mas barata; el bloque bajo "Paso 3" se baraja y el Paso 3 inicia en la siguiente fase.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fase3" style="--d:.35s">
+    <div class="hd">
+      <div>
+        <h2>Fase 3 · Compra de recursos</h2>
+        <p>Se compra en orden inverso para balancear la ventaja.</p>
+      </div>
+      <span class="badge">Fase 3</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Que hacer</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Orden inverso</div><div class="d">Compra del ultimo al primero en el orden de juego.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Compra segun mercado</div><div class="d">Paga el precio de la casilla de cada recurso.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Guarda en tus centrales</div><div class="d">Coloca los recursos comprados en tus centrales.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Recordatorios utiles</h3>
+        <div class="stack">
+          <div class="node"><div class="t">Compra con plan</div><div class="d">Solo compra recursos que tu parque de centrales pueda usar.</div></div>
+          <div class="node"><div class="t">El precio sube al vaciar</div><div class="d">Los recursos caros quedan cuando se agotan los baratos.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fase4" style="--d:.4s">
+    <div class="hd">
+      <div>
+        <h2>Fase 4 · Construccion</h2>
+        <p>Conecta ciudades y actualiza el marcador.</p>
+      </div>
+      <span class="badge">Fase 4</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Pasos clave</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Orden inverso</div><div class="d">Construye del ultimo al primero.</div></div>
+          <div class="arrow"></div>
+          <div class="split">
+            <div class="node good"><div class="t">Primera ciudad</div><div class="d">Puedes elegir cualquier ciudad vacia y pagar 10.</div></div>
+            <div class="node warn"><div class="t">Expandir red</div><div class="d">Conecta a tu red y paga conexion + hueco.</div></div>
+          </div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Coste de hueco</div><div class="d">
+            <span class="slot-chip" data-step="1"><span class="slot-led" aria-hidden="true"></span>Paso 1 · 10</span>
+            <span class="slot-chip" data-step="2"><span class="slot-led" aria-hidden="true"></span>Paso 2 · 15</span>
+            <span class="slot-chip" data-step="3"><span class="slot-led" aria-hidden="true"></span>Paso 3 · 20</span>
+          </div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Actualiza marcador</div><div class="d">Sube tu casa en el marcador de ciudades.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Alertas de cambio de paso</h3>
+        <div class="flow">
+          <div class="node warn"><div class="t">Posible Paso 2</div><div class="d">Si alguien llega a <span class="k" id="step2CitiesInline">7</span> ciudades, el cambio se activa.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Aplicacion</div><div class="d">El Paso 2 entra al inicio de la Fase 5.</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Alerta de fin de partida</h3>
+        <div class="flow">
+          <div class="node bad"><div class="t">Se comprueba al terminar la Fase 4</div><div class="d">Si alguien llega a <span class="k" id="endCitiesAlert">17</span> ciudades (segun jugadores), se activa el final.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fase5" style="--d:.45s">
+    <div class="hd">
+      <div>
+        <h2>Fase 5 · Burocracia</h2>
+        <p>Cobros, reposicion de recursos y mercado de centrales.</p>
+      </div>
+      <span class="badge">Fase 5</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Secuencia</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Ganancias</div><div class="d">Cobras segun tu tarjeta de Ganancias y ciudades abastecidas.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Reponer mercado de recursos</div><div class="d">Usa la tabla segun jugadores y paso.</div></div>
+          <div class="arrow"></div>
+          <div class="node"><div class="t">Reorganizar mercado de centrales</div><div class="d">Reemplaza centrales segun el paso actual.</div></div>
+        </div>
+        <div class="footer-note">En la ultima Fase 5 (fin de partida) no se gana dinero.</div>
+      </div>
+      <div class="panel">
+        <h3>Reorganizacion del mercado</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Procedimiento actual</div><div class="d" id="reorgText">—</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Reposicion del mercado (dinamica)</h3>
+        <table>
+          <thead>
+            <tr><th>Recurso</th><th>Cantidad a reponer</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Carbon</td><td id="coalVal">-</td></tr>
+            <tr><td>Petroleo</td><td id="oilVal">-</td></tr>
+            <tr><td>Basura</td><td id="trashVal">-</td></tr>
+            <tr><td>Uranio</td><td id="uraniumVal">-</td></tr>
+          </tbody>
+        </table>
+        <div class="footer-note">Coloca los recursos empezando por las casillas mas caras.</div>
+      </div>
+      <div class="panel">
+        <h3>Alertas en esta fase</h3>
+        <div class="flow">
+          <div class="node warn"><div class="t">Inicio de Paso 2</div><div class="d">Si se activo en Fase 4, entra en vigor aqui y se retira la central mas barata una vez.</div></div>
+          <div class="arrow"></div>
+          <div class="node bad"><div class="t">Posible Paso 3</div><div class="d">Si se roba la carta "Paso 3": se retira esa carta y la central mas barata; el bloque bajo "Paso 3" se baraja y el Paso 3 empieza en la siguiente ronda.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.4s">
+    <div class="hd">
+      <div>
+        <h2>Notas del mapa de Estados Unidos</h2>
+        <p>Reglas especiales del tablero USA.</p>
+      </div>
+      <span class="badge">EE. UU.</span>
+    </div>
+    <div class="bd">
+      <div class="grid">
+        <div class="panel">
+          <h3>Reglas especiales</h3>
+          <div class="stack">
+            <div class="node"><div class="t">Carbon siempre a 8 electros</div><div class="d">Precio estable segun reglamento.</div></div>
+            <div class="node"><div class="t">Carbon usado al almacen</div><div class="d">No vuelve al mercado.</div></div>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Recordatorio</h3>
+          <div class="node"><div class="t">Todo lo demas igual</div><div class="d">Zonas, pasos, umbrales y reposicion siguen la tabla base.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="--d:.45s">
+    <div class="hd">
+      <div>
+        <h2>Final de la partida y victoria</h2>
+        <p>Se activa tras la Fase 4 cuando se alcanza el umbral.</p>
+      </div>
+      <span class="badge">Final</span>
+    </div>
+    <div class="bd grid">
+      <div class="panel">
+        <h3>Umbral de fin</h3>
+        <table>
+          <thead>
+            <tr><th>Jugadores</th><th>Ciudades</th></tr>
+          </thead>
+          <tbody id="endTable">
+            <tr data-p="2"><td>2</td><td>18</td></tr>
+            <tr data-p="3"><td>3-4</td><td>17</td></tr>
+            <tr data-p="4"><td>3-4</td><td>17</td></tr>
+            <tr data-p="5"><td>5</td><td>15</td></tr>
+            <tr data-p="6"><td>6</td><td>14</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>Condicion de victoria</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Ultima Fase 5</div><div class="d">No se ganan electros.</div></div>
+          <div class="arrow"></div>
+          <div class="node good"><div class="t">Gana quien abastece mas ciudades</div><div class="d">Se compara capacidad de abastecimiento.</div></div>
+          <div class="arrow"></div>
+          <div class="node warn"><div class="t">Empate</div><div class="d">Gana quien tenga mas electros restantes.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Este manual resume el reglamento.</div>
+</main>
+
+<div class="dock" aria-label="Selectores rapidos">
+  <div class="selectors">
+    <label class="chip">Jugadores
+      <select id="playersSelBottom">
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4" selected>4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </label>
+    <div class="chip">Paso actual</div>
+    <div class="seg" id="stepSegBottom">
+      <button data-step="1" class="active">Paso 1</button>
+      <button data-step="2">Paso 2</button>
+      <button data-step="3">Paso 3</button>
+    </div>
+    <nav class="phase-nav" aria-label="Ir a fase (rapido)">
+      <a href="#fase1">F1</a>
+      <a href="#fase2">F2</a>
+      <a href="#fase3">F3</a>
+      <a href="#fase4">F4</a>
+      <a href="#fase5">F5</a>
+    </nav>
+  </div>
+</div>
+
+<div class="sticky-hint" id="hint">Paso actualizado.</div>
+
+<script>
+  const playersSel = document.getElementById('playersSel');
+  const playersSelBottom = document.getElementById('playersSelBottom');
+  const stepSeg = document.getElementById('stepSeg');
+  const stepSegBottom = document.getElementById('stepSegBottom');
+  const stepSegs = [stepSeg, stepSegBottom].filter(Boolean);
+  const stepCards = Array.from(document.querySelectorAll('.step-card'));
+
+  const zonesTable = document.getElementById('zonesTable');
+  const marketTable = document.getElementById('marketTable');
+  const endTable = document.getElementById('endTable');
+
+  const step2Cities = document.getElementById('step2Cities');
+  const step2CitiesInline = document.getElementById('step2CitiesInline');
+  const endCities = document.getElementById('endCities');
+  const endCitiesAlert = document.getElementById('endCitiesAlert');
+  const slotChips = Array.from(document.querySelectorAll('.slot-chip'));
+  const reorgText = document.getElementById('reorgText');
+
+  const coalVal = document.getElementById('coalVal');
+  const oilVal = document.getElementById('oilVal');
+  const trashVal = document.getElementById('trashVal');
+  const uraniumVal = document.getElementById('uraniumVal');
+
+  const hint = document.getElementById('hint');
+
+  const data = {
+    zones: {2:3, 3:3, 4:4, 5:5, 6:5},
+    step2: {2:7, 3:7, 4:7, 5:7, 6:6},
+    end: {2:18, 3:17, 4:17, 5:15, 6:14},
+    repl: {
+      2: {1:{coal:3, oil:2, trash:1, uranium:1}, 2:{coal:4, oil:2, trash:2, uranium:1}, 3:{coal:3, oil:4, trash:3, uranium:1}},
+      3: {1:{coal:4, oil:2, trash:1, uranium:1}, 2:{coal:5, oil:3, trash:2, uranium:1}, 3:{coal:3, oil:4, trash:3, uranium:1}},
+      4: {1:{coal:5, oil:3, trash:2, uranium:1}, 2:{coal:6, oil:4, trash:3, uranium:2}, 3:{coal:4, oil:5, trash:4, uranium:2}},
+      5: {1:{coal:5, oil:4, trash:3, uranium:2}, 2:{coal:7, oil:5, trash:3, uranium:3}, 3:{coal:5, oil:6, trash:5, uranium:2}},
+      6: {1:{coal:7, oil:5, trash:3, uranium:2}, 2:{coal:9, oil:6, trash:5, uranium:3}, 3:{coal:6, oil:7, trash:6, uranium:3}}
+    }
+  };
+
+  function setPlayers(p){
+    const pNum = Number(p);
+
+    // highlight rows in tables
+    [zonesTable, marketTable, endTable].forEach(tbl => {
+      if(!tbl) return;
+      Array.from(tbl.querySelectorAll('tr')).forEach(tr => {
+        tr.classList.toggle('active', tr.dataset.p === String(pNum));
+      });
+    });
+
+    step2Cities.textContent = String(data.step2[pNum]);
+    step2CitiesInline.textContent = String(data.step2[pNum]);
+    endCities.textContent = String(data.end[pNum]);
+    if(endCitiesAlert) endCitiesAlert.textContent = String(data.end[pNum]);
+
+    playersSel.value = String(pNum);
+    if(playersSelBottom) playersSelBottom.value = String(pNum);
+    updateRepl(pNum, getStep());
+    localStorage.setItem('at_players', String(pNum));
+  }
+
+  function getStep(){
+    let btn = stepSeg.querySelector('button.active');
+    if(!btn && stepSegBottom) btn = stepSegBottom.querySelector('button.active');
+    return btn ? Number(btn.dataset.step) : 1;
+  }
+
+  function setStep(step){
+    stepSegs.forEach(seg => {
+      Array.from(seg.querySelectorAll('button')).forEach(btn => {
+        btn.classList.toggle('active', Number(btn.dataset.step) === step);
+      });
+    });
+    stepCards.forEach(card => {
+      card.classList.toggle('active', Number(card.dataset.step) === step);
+    });
+    slotChips.forEach(chip => {
+      chip.classList.toggle('active', Number(chip.dataset.step) <= step);
+    });
+    if(reorgText){
+      if(step === 3){
+        reorgText.textContent = 'Se retira la central mas barata del mercado actual y se reemplaza (si queda mazo).';
+      }else{
+        reorgText.textContent = 'La central mas cara del mercado futuro va al fondo; se roba una nueva para el futuro y otra sube al mercado actual.';
+      }
+    }
+    updateRepl(Number(playersSel.value), step);
+    localStorage.setItem('at_step', String(step));
+    document.body.classList.add('show-hint');
+    hint.textContent = 'Paso actualizado a ' + step + '.';
+    setTimeout(() => document.body.classList.remove('show-hint'), 1200);
+  }
+
+  function updateRepl(pNum, step){
+    const row = data.repl[pNum] && data.repl[pNum][step];
+    if(!row){
+      coalVal.textContent = '-';
+      oilVal.textContent = '-';
+      trashVal.textContent = '-';
+      uraniumVal.textContent = '-';
+      return;
+    }
+    coalVal.textContent = String(row.coal);
+    oilVal.textContent = String(row.oil);
+    trashVal.textContent = String(row.trash);
+    uraniumVal.textContent = String(row.uranium);
+  }
+
+  // init
+  const savedPlayers = Number(localStorage.getItem('at_players') || '4');
+  const savedStep = Number(localStorage.getItem('at_step') || '1');
+  playersSel.value = String(savedPlayers);
+  if(playersSelBottom) playersSelBottom.value = String(savedPlayers);
+  setPlayers(savedPlayers);
+  setStep([1,2,3].includes(savedStep) ? savedStep : 1);
+
+  playersSel.addEventListener('change', (e) => setPlayers(e.target.value));
+  if(playersSelBottom){
+    playersSelBottom.addEventListener('change', (e) => setPlayers(e.target.value));
+  }
+  stepSegs.forEach(seg => {
+    seg.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-step]');
+      if(btn) setStep(Number(btn.dataset.step));
+    });
+  });
+</script>
+</body>
+</html>
