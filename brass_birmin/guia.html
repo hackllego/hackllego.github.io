@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Brass Birmingham - Guia interactiva para principiantes</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap");
+
+    :root{
+      --bg:#130f0c;
+      --bg-soft:#1b1612;
+      --panel:#221b15;
+      --panel-2:#2a2119;
+      --line:#4a3a2a;
+      --text:#f4eee5;
+      --muted:#c3b4a2;
+      --accent:#d6a85a;
+      --accent-2:#86b59a;
+      --warn:#e0b062;
+      --danger:#dc8478;
+      --shadow:0 20px 40px rgba(0,0,0,.28);
+      --radius:20px;
+      --radius-sm:14px;
+      --display:"Oswald", sans-serif;
+      --body:"Source Sans 3", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--body);
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 0% -10%, rgba(214,168,90,.18), transparent 60%),
+        radial-gradient(800px 520px at 100% 0%, rgba(134,181,154,.14), transparent 58%),
+        linear-gradient(180deg, #120f0d 0%, #17120f 100%);
+      line-height:1.35;
+    }
+
+    a{color:inherit}
+    button, select{font:inherit}
+    button{cursor:pointer}
+
+    .shell{
+      width:min(100%, 980px);
+      margin:0 auto;
+      padding:16px 14px 120px;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(12px) saturate(1.1);
+      background:linear-gradient(180deg, rgba(18,14,12,.94), rgba(18,14,12,.72));
+      border-bottom:1px solid rgba(74,58,42,.65);
+    }
+
+    .topbar-inner{
+      width:min(100%, 980px);
+      margin:0 auto;
+      padding:12px 14px 10px;
+      display:grid;
+      gap:10px;
+    }
+
+    .hero{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-family:var(--display);
+      font-size:34px;
+      line-height:1;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+
+    .hero p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+      max-width:56ch;
+    }
+
+    .tag{
+      flex:0 0 auto;
+      border:1px solid rgba(214,168,90,.45);
+      color:var(--accent);
+      background:rgba(214,168,90,.09);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .toolbar{
+      display:grid;
+      gap:8px;
+    }
+
+    .toolbar[hidden]{
+      display:none;
+    }
+
+    .toolbar-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+
+    .chip,
+    .segment,
+    .jump a{
+      border:1px solid rgba(74,58,42,.8);
+      background:rgba(34,27,21,.86);
+      border-radius:999px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .chip-btn{
+      border:1px solid rgba(74,58,42,.8);
+      background:rgba(34,27,21,.86);
+      color:var(--text);
+      border-radius:999px;
+      width:42px;
+      height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      font-size:20px;
+      line-height:1;
+      font-weight:700;
+    }
+
+    .chip select{
+      color:var(--text);
+      background:transparent;
+      border:none;
+      outline:none;
+    }
+
+    .segment{
+      display:inline-flex;
+      padding:4px;
+      gap:4px;
+    }
+
+    .segment button{
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+    }
+
+    .segment button.active{
+      background:rgba(214,168,90,.18);
+      color:var(--text);
+      border:1px solid rgba(214,168,90,.5);
+    }
+
+    .jump{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+      padding-bottom:2px;
+    }
+
+    .jump::-webkit-scrollbar{display:none}
+
+    .jump a{
+      flex:0 0 auto;
+      text-decoration:none;
+      padding:8px 11px;
+      font-size:12px;
+      color:var(--text);
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(34,27,21,.96), rgba(28,22,17,.94));
+      border:1px solid rgba(74,58,42,.78);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      margin-top:14px;
+    }
+
+    .card-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      padding:14px 16px 10px;
+      border-bottom:1px solid rgba(74,58,42,.62);
+      background:rgba(255,255,255,.02);
+    }
+
+    .card-head h2{
+      margin:0;
+      font-family:var(--display);
+      font-size:24px;
+      line-height:1;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
+    .card-head p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .badge{
+      flex:0 0 auto;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(74,58,42,.85);
+      color:var(--muted);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+
+    .card-body{padding:14px 16px 16px}
+
+    .grid{
+      display:grid;
+      gap:12px;
+    }
+
+    @media (min-width:780px){
+      .grid.cols-2{grid-template-columns:1.15fr .85fr}
+      .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    }
+
+    .panel{
+      background:rgba(43,34,26,.62);
+      border:1px solid rgba(74,58,42,.62);
+      border-radius:var(--radius-sm);
+      padding:12px;
+    }
+
+    .panel h3{
+      margin:0 0 8px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .stack{display:grid; gap:8px}
+
+    .item,
+    .step,
+    .qa,
+    .tip,
+    .mini{
+      border:1px solid rgba(74,58,42,.62);
+      border-radius:14px;
+      background:rgba(25,20,16,.55);
+      padding:11px 12px;
+    }
+
+    .item strong,
+    .step strong,
+    .qa strong,
+    .tip strong,
+    .mini strong{
+      display:block;
+      font-size:14px;
+    }
+
+    .item span,
+    .step span,
+    .qa span,
+    .tip span,
+    .mini span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .pill-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      margin-top:10px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(74,58,42,.7);
+      color:var(--muted);
+      background:rgba(25,20,16,.45);
+    }
+
+    .pill.ok{border-color:rgba(134,181,154,.6); color:#d8efe2}
+    .pill.need{border-color:rgba(214,168,90,.55); color:#f1d6a5}
+    .pill.warn{border-color:rgba(220,132,120,.5); color:#f3c4be}
+
+    .timeline{
+      display:grid;
+      gap:10px;
+    }
+
+    .timeline .step{
+      display:grid;
+      grid-template-columns:44px 1fr;
+      gap:10px;
+      align-items:start;
+    }
+
+    .num{
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:var(--display);
+      font-size:20px;
+      background:rgba(214,168,90,.16);
+      border:1px solid rgba(214,168,90,.55);
+      color:var(--text);
+    }
+
+    .list{
+      margin:0;
+      padding-left:18px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .list li + li{margin-top:6px}
+
+    .quick-actions{
+      display:grid;
+      gap:10px;
+    }
+
+    .action-card{
+      border:1px solid rgba(74,58,42,.72);
+      border-radius:16px;
+      background:rgba(24,19,15,.72);
+      overflow:hidden;
+    }
+
+    .action-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      padding:12px;
+      border-bottom:1px solid rgba(74,58,42,.55);
+    }
+
+    .action-head h3{
+      margin:0;
+      font-size:20px;
+      font-family:var(--display);
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    .action-head p{
+      margin:5px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .action-grid{
+      display:grid;
+      gap:10px;
+      padding:12px;
+    }
+
+    .facts{
+      display:grid;
+      gap:8px;
+    }
+
+    .fact{
+      background:rgba(43,34,26,.55);
+      border:1px solid rgba(74,58,42,.55);
+      border-radius:12px;
+      padding:10px;
+    }
+
+    .fact .label{
+      display:block;
+      color:var(--muted);
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:4px;
+    }
+
+    .fact .value{
+      font-size:14px;
+      font-weight:700;
+    }
+
+    details{
+      border-top:1px solid rgba(74,58,42,.5);
+      padding:0 12px 12px;
+    }
+
+    details + details{padding-top:8px}
+
+    summary{
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 0 0;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    summary::-webkit-details-marker{display:none}
+
+    summary::after{
+      content:"+";
+      color:var(--accent);
+      font-size:18px;
+      line-height:1;
+    }
+
+    details[open] summary::after{content:"-"}
+
+    .details-body{
+      padding-top:8px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .duo{
+      display:grid;
+      gap:10px;
+    }
+
+    @media (min-width:640px){
+      .duo{grid-template-columns:1fr 1fr}
+    }
+
+    .cta-map{
+      display:grid;
+      gap:8px;
+    }
+
+    .cta-link{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      text-decoration:none;
+      border:1px solid rgba(74,58,42,.65);
+      border-radius:14px;
+      padding:11px 12px;
+      background:rgba(25,20,16,.45);
+    }
+
+    .cta-link strong{font-size:14px}
+    .cta-link span{font-size:13px; color:var(--muted)}
+
+    .mode-learn .consult-only{display:none}
+    .mode-consult .learn-only{display:none}
+
+    .dock{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:25;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background:linear-gradient(180deg, rgba(18,14,12,.15), rgba(18,14,12,.96));
+      border-top:1px solid rgba(74,58,42,.72);
+      backdrop-filter:blur(12px);
+    }
+
+    .dock-inner{
+      width:min(100%, 980px);
+      margin:0 auto;
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      scrollbar-width:none;
+    }
+
+    .dock-inner::-webkit-scrollbar{display:none}
+
+    .dock a{
+      flex:0 0 auto;
+      text-decoration:none;
+      color:var(--text);
+      border:1px solid rgba(74,58,42,.8);
+      background:rgba(34,27,21,.9);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:13px;
+    }
+
+    .footer-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+  </style>
+</head>
+<body class="mode-learn">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="hero">
+        <div>
+          <h1>Brass Birmingham</h1>
+        </div>
+        <button type="button" class="chip-btn" id="menuToggle" aria-expanded="true" aria-controls="topToolbar" aria-label="Ocultar menu">↑</button>
+      </div>
+
+      <div class="toolbar" id="topToolbar">
+        <div class="toolbar-row">
+          <div class="chip">Modo
+            <div class="segment" id="modeSwitch" aria-label="Cambiar modo">
+              <button type="button" data-mode="learn" class="active">Aprender</button>
+              <button type="button" data-mode="consult">Consulta</button>
+            </div>
+          </div>
+        </div>
+        <div class="jump" aria-label="Ir a seccion">
+          <a href="#empezar">Empezar</a>
+          <a href="#preparacion">Preparacion</a>
+          <a href="#turno">Turno</a>
+          <a href="#acciones">Acciones</a>
+          <a href="#recursos">Recursos</a>
+          <a href="#era">Fin de era</a>
+          <a href="#consejos">Consejos</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="card" id="empezar">
+      <div class="card-head">
+        <div>
+          <h2>Empezar a jugar</h2>
+          <p>Lo minimo que un principiante debe entender antes del primer turno.</p>
+        </div>
+        <div class="badge">Inicio</div>
+      </div>
+      <div class="card-body grid cols-2">
+        <div class="panel">
+          <h3>Objetivo y ritmo</h3>
+          <div class="stack">
+            <div class="item">
+              <strong>Gana quien tenga mas PV al final de la era del ferrocarril.</strong>
+              <span>Los puntos llegan por enlaces puntados al final de cada era y por losetas de industria volteadas.</span>
+            </div>
+            <div class="item">
+              <strong>La partida tiene 2 eras.</strong>
+              <span>Canales primero, ferrocarril despues. Entre medias se puntua, se retiran industrias obsoletas y se reparten nuevas manos.</span>
+            </div>
+            <div class="item">
+              <strong>Cada turno normal tiene 2 acciones.</strong>
+              <span>En la primera ronda de la era de canales, cada jugador hace solo 1 accion.</span>
+            </div>
+          </div>
+          <div class="pill-row">
+            <div class="pill ok">1 descarte por accion</div>
+            <div class="pill need">Roba hasta 8 al final del turno</div>
+            <div class="pill warn">Cuando no hay mazo, tu mano se ira agotando</div>
+          </div>
+        </div>
+
+        <div class="panel learn-only">
+          <h3>Preparacion resumida</h3>
+          <div class="timeline">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <strong>Prepara tablero, mercados y comerciantes.</strong>
+                <span>Coloca comerciantes validos segun jugadores, cerveza en comerciantes activos, cubos en mercados y mazo de cartas.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <strong>Cada jugador recibe su tablero, color y £17.</strong>
+                <span>Coloca ingresos en 10, PV en 0, apila industrias y roba 8 cartas.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <strong>Orden de turno y ronda.</strong>
+                <span>Juegas segun el orden de personaje; al final de la ronda el orden cambia segun lo gastado.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel consult-only">
+          <h3>Consulta rapida</h3>
+          <div class="stack">
+            <div class="mini">
+              <strong>Primera ronda de canales</strong>
+              <span>Solo 1 accion por jugador.</span>
+            </div>
+            <div class="mini">
+              <strong>Orden de turno siguiente</strong>
+              <span>Va primero quien menos haya gastado esta ronda.</span>
+            </div>
+            <div class="mini">
+              <strong>Ingresos</strong>
+              <span>Se cobran al final de cada ronda excepto al final del juego.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="preparacion">
+      <div class="card-head">
+        <div>
+          <h2>Preparacion de partida</h2>
+          <p>Checklist rapido para montar la mesa sin volver al manual completo.</p>
+        </div>
+        <div class="badge">Setup</div>
+      </div>
+      <div class="card-body grid cols-2">
+        <div class="panel">
+          <h3>Preparacion del tablero</h3>
+          <div class="timeline">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <strong>Elige lado de dia o noche.</strong>
+                <span>Antes de nada, decide el lado del tablero y ajusta la partida al numero de jugadores.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <strong>Retira cartas y comerciantes no validos.</strong>
+                <span>En 2 y 3 jugadores hay localizaciones y comerciantes que no entran en juego.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <strong>Prepara mazo y comodines.</strong>
+                <span>Deja los 2 comodines visibles, baraja el resto y forma el mazo de robo.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">4</div>
+              <div>
+                <strong>Coloca comerciantes y cerveza inicial.</strong>
+                <span>Pon un barril en cada comerciante activo que no este en blanco.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">5</div>
+              <div>
+                <strong>Rellena mercados y reserva.</strong>
+                <span>Mercado de carbón casi lleno, mercado de hierro con ambos espacios de £1 vacios, y el resto de cubos y barriles a la reserva general.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Preparacion de cada jugador</h3>
+          <div class="stack">
+            <div class="item">
+              <strong>Recibe tablero, color y £17.</strong>
+              <span>Coloca enlaces, personaje y todas tus industrias en el tablero personal.</span>
+            </div>
+            <div class="item">
+              <strong>Coloca marcadores iniciales.</strong>
+              <span>PV en 0 e ingresos en 10.</span>
+            </div>
+            <div class="item">
+              <strong>Forma mano y descarte inicial.</strong>
+              <span>Roba 8 cartas para la mano y 1 carta adicional boca abajo para iniciar tu pila de descarte.</span>
+            </div>
+          </div>
+          <div class="pill-row">
+            <div class="pill ok">Cada jugador empieza con 8 cartas</div>
+            <div class="pill need">£17 iniciales</div>
+            <div class="pill warn">El descarte ya existe desde el inicio</div>
+          </div>
+          <details>
+            <summary>Ajustes por numero de jugadores</summary>
+            <div class="details-body">
+              A 2 jugadores no se usan las cartas de localizacion azules ni turquesa, y no se colocan comerciantes en Warrington ni Nottingham. A 3 jugadores se excluyen las cartas turquesa y no se coloca comerciante en Nottingham. A 4 jugadores entra todo.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="turno">
+      <div class="card-head">
+        <div>
+          <h2>Tu turno</h2>
+          <p>Flujo fijo para no perderse incluso en la primera partida.</p>
+        </div>
+        <div class="badge">Turno</div>
+      </div>
+      <div class="card-body grid cols-2">
+        <div class="panel">
+          <h3>Secuencia operativa</h3>
+          <div class="timeline">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <strong>Elige hasta 2 acciones.</strong>
+                <span>Puedes repetir la misma accion. Si pasas, sigues descartando una carta por cada accion no hecha.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <strong>Descarta y paga.</strong>
+                <span>La carta descartada habilita la accion cuando haga falta. Todo el dinero gastado va sobre tu personaje para recalcular el turno.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <strong>Resuelve recursos, colocacion o venta.</strong>
+                <span>Carbón, hierro y cerveza se consumen segun reglas distintas. No los trates igual.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">4</div>
+              <div>
+                <strong>Roba hasta volver a 8 cartas.</strong>
+                <span>Si el mazo esta vacio no rellenas la mano completa.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Donde mirar segun tu duda</h3>
+          <div class="cta-map">
+            <a class="cta-link" href="#acciones">
+              <div><strong>Construir o enlazar</strong><br/><span>Ve a Acciones y despues a Recursos si hay carbón, hierro o cerveza.</span></div>
+              <div>→</div>
+            </a>
+            <a class="cta-link" href="#recursos">
+              <div><strong>No sabes de donde sale el recurso</strong><br/><span>Consulta primero Carbón, Hierro y Cerveza.</span></div>
+              <div>→</div>
+            </a>
+            <a class="cta-link" href="#era">
+              <div><strong>No recuerdas que puntua</strong><br/><span>Ve a Fin de era y puntuacion.</span></div>
+              <div>→</div>
+            </a>
+            <a class="cta-link" href="#dudas">
+              <div><strong>Tienes una duda corta</strong><br/><span>Usa Dudas rapidas.</span></div>
+              <div>→</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="acciones">
+      <div class="card-head">
+        <div>
+          <h2>Acciones</h2>
+          <p>Lo primero visible es lo operativo: que descartas, que necesitas, que pagas, que ganas y que te limita.</p>
+        </div>
+        <div class="badge">Nucleo</div>
+      </div>
+      <div class="card-body">
+        <div class="quick-actions" id="actionsHost"></div>
+      </div>
+    </section>
+
+    <section class="card" id="recursos">
+      <div class="card-head">
+        <div>
+          <h2>Recursos y conexiones</h2>
+          <p>La mayor parte de los errores de principiantes salen de aqui.</p>
+        </div>
+        <div class="badge">Clave</div>
+      </div>
+      <div class="card-body grid cols-3" id="resourcesHost"></div>
+    </section>
+
+    <section class="card" id="dudas">
+      <div class="card-head">
+        <div>
+          <h2>Dudas rapidas</h2>
+          <p>Respuestas de pocos segundos para consulta en mesa.</p>
+        </div>
+        <div class="badge">FAQ</div>
+      </div>
+      <div class="card-body">
+        <div class="duo" id="faqHost"></div>
+      </div>
+    </section>
+
+    <section class="card" id="era">
+      <div class="card-head">
+        <div>
+          <h2>Fin de era y puntuacion</h2>
+          <p>Que ocurre al cerrar canales y como termina la partida.</p>
+        </div>
+        <div class="badge">Era</div>
+      </div>
+      <div class="card-body grid cols-2">
+        <div class="panel">
+          <h3>Mantenimiento de fin de era</h3>
+          <div class="timeline">
+            <div class="step">
+              <div class="num">1</div>
+              <div>
+                <strong>Puntua enlaces.</strong>
+                <span>Cada enlace da PV segun las localizaciones adyacentes. Los enlaces se retiran al puntuar.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">2</div>
+              <div>
+                <strong>Puntua industrias volteadas.</strong>
+                <span>Solo las losetas ya volteadas dan los PV impresos.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">3</div>
+              <div>
+                <strong>Si termina canales, limpia y prepara ferrocarril.</strong>
+                <span>Retira industrias de nivel 1 del tablero, repone cerveza en comerciantes y rebaraja descartes para nuevas manos.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Diferencias entre eras</h3>
+          <div class="stack">
+            <div class="item">
+              <strong>Canales</strong>
+              <span>Maximo 1 industria propia por localizacion. Los enlaces cuestan £3 y son de canal.</span>
+            </div>
+            <div class="item">
+              <strong>Ferrocarril</strong>
+              <span>Puedes tener varias industrias propias en la misma localizacion. Los enlaces son ferroviarios y consumen carbón.</span>
+            </div>
+            <div class="item">
+              <strong>Victoria final</strong>
+              <span>Gana quien tenga mas PV. Si hay empate, mandan ingresos y despues dinero restante.</span>
+            </div>
+          </div>
+          <details>
+            <summary>Reglas que suelen olvidarse</summary>
+            <div class="details-body">
+              Las industrias de nivel 2 o superior que sobreviven a canales pueden puntuar en ambas eras. Las industrias sobreedificadas van a la caja y ya no puntuaran, aunque lo ganado antes no se pierde.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="consejos">
+      <div class="card-head">
+        <div>
+          <h2>Consejos para principiantes</h2>
+          <p>Ayuda tactica ligera, sin convertir la guia en estrategia avanzada.</p>
+        </div>
+        <div class="badge">Novato</div>
+      </div>
+      <div class="card-body grid cols-2">
+        <div class="panel">
+          <h3>Consejos de primera partida</h3>
+          <div class="stack" id="tipsHost"></div>
+        </div>
+        <div class="panel">
+          <h3>Errores comunes y prioridades</h3>
+          <div class="stack">
+            <div class="tip">
+              <strong>Error comun: tratar hierro como carbón.</strong>
+              <span>El hierro no necesita conexion. El carbón si necesita una ruta valida o acceso al mercado con icono de comercio.</span>
+            </div>
+            <div class="tip">
+              <strong>Error comun: desarrollar cerveza demasiado pronto.</strong>
+              <span>Sin cerveza disponible puedes bloquear tus propias ventas.</span>
+            </div>
+            <div class="tip">
+              <strong>Prioridad en canales.</strong>
+              <span>Intenta colocar al menos una industria que no desaparezca gratis al pasar a ferrocarril, o desarrollar hacia niveles que si sobrevivan.</span>
+            </div>
+            <div class="tip">
+              <strong>Prioridad en ferrocarril.</strong>
+              <span>Ten acceso a carbón antes de querer encadenar enlaces ferroviarios.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">Resumen reescrito del manual oficial para uso rapido en mesa.</div>
+    </section>
+  </main>
+
+  <nav class="dock" aria-label="Navegacion rapida inferior">
+    <div class="dock-inner">
+      <a href="#preparacion">Preparacion</a>
+      <a href="#turno">Turno</a>
+      <a href="#acciones">Acciones</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#era">Fin de era</a>
+      <a href="#consejos">Consejos</a>
+    </div>
+  </nav>
+
+  <script>
+    const actions = [
+      {
+        name: "Construir",
+        summary: "Coloca una industria en el tablero pagando coste y recursos.",
+        discard: "Carta de localizacion concreta, carta de industria adecuada o comodin equivalente.",
+        need: "Localizacion valida, red o carta adecuada, coste de la loseta y a veces carbón o hierro.",
+        pay: "Dinero impreso y recursos requeridos por la loseta.",
+        gain: "Nueva industria en tablero; algunas minas, fundiciones y cervecerias se cargan con recursos o barriles.",
+        limit: "En canales solo 1 industria propia por localizacion. En ferrocarril puede haber varias.",
+        tags: ["Permitido con carta correcta", "Requiere recursos segun loseta", "Puede usar sobreedificacion"],
+        mistakes: [
+          "Con carta de localizacion puedes construir ahi aunque no forme parte de tu red.",
+          "Con carta de industria necesitas que la localizacion ya forme parte de tu red.",
+          "Si construyes mina conectada a comercio o cualquier fundicion, vende cubos al mercado inmediatamente si hay hueco."
+        ],
+        advanced: "Puedes sobreedificar tus propias industrias en cualquier momento pagando el nuevo coste. Solo puedes sobreedificar minas o fundiciones rivales si no quedan cubos de ese recurso en tablero ni mercado."
+      },
+      {
+        name: "Enlazar",
+        summary: "Amplia tu red con canales o ferrocarriles.",
+        discard: "Cualquier carta.",
+        need: "La linea debe estar sin desarrollar y adyacente a tu red, salvo que aun no tengas nada en el tablero.",
+        pay: "Canal: £3. Ferrocarril: £5 por 1 enlace o £15 por 2 enlaces con 1 cerveza.",
+        gain: "Nueva conexion para construir, vender y puntuar al final de era.",
+        limit: "En canales no puedes poner ferrocarril. En ferrocarril cada enlace consume 1 carbón.",
+        tags: ["Cualquier carta sirve", "Ferrocarril consume carbón", "Doble enlace pide cerveza"],
+        mistakes: [
+          "Si no tienes nada en tablero puedes enlazar en cualquier linea valida.",
+          "La cerveza extra de doble enlace en ferrocarril debe salir de una cerveceria, no de un comerciante.",
+          "Cada enlace ferroviario comprueba por separado su conexion a una fuente de carbón despues de colocarse."
+        ],
+        advanced: "Las cervecerias artesanales tienen reglas especiales de acceso: Cannock y la zona Kidderminster/Worcester conectan de forma particular segun el manual."
+      },
+      {
+        name: "Desarrollar",
+        summary: "Retira losetas de nivel bajo de tu tablero para llegar antes a niveles altos.",
+        discard: "Cualquier carta.",
+        need: "1 hierro por cada loseta retirada.",
+        pay: "El hierro consumido.",
+        gain: "Acceso a industrias mejores sin tener que construir todo el nivel anterior.",
+        limit: "Retiras 1 o 2 losetas; siempre la mas baja disponible de cada industria elegida.",
+        tags: ["Acelera niveles altos", "Consume hierro", "No retira ciertas alfarerias"],
+        mistakes: [
+          "Las alfarerias con icono de bombilla no se pueden desarrollar.",
+          "Puedes retirar dos losetas distintas en una sola accion si pagas 2 hierro.",
+          "El hierro puede venir de cualquier fundicion sin voltear, sin necesidad de conexion."
+        ],
+        advanced: "Es una de las mejores acciones para que industrias de nivel 2 o superior entren pronto y puedan sobrevivir a la limpieza de fin de canales."
+      },
+      {
+        name: "Vender",
+        summary: "Voltea fabricas de algodon, fabricas y alfarerias conectadas a un comerciante valido.",
+        discard: "Cualquier carta.",
+        need: "Conexion a comerciante con icono correcto y cerveza requerida por la loseta.",
+        pay: "La cerveza necesaria.",
+        gain: "Volteas la loseta, subes ingresos y puedes llevarte la bonificacion del comerciante si usas su cerveza.",
+        limit: "No puedes vender si no puedes consumir toda la cerveza exigida.",
+        tags: ["Necesita comerciante", "Suele necesitar cerveza", "Puede vender varias losetas en una accion"],
+        mistakes: [
+          "Tus cervecerias no necesitan estar conectadas para usarlas.",
+          "La cerveza de otro jugador si necesita estar conectada al lugar donde la usas.",
+          "La cerveza del comerciante solo sirve al vender y activa su bonificacion."
+        ],
+        advanced: "Gloucester da desarrollar, Oxford da ingresos, Nottingham y Shrewsbury dan PV, Warrington da £5 cuando usas la cerveza del comerciante."
+      },
+      {
+        name: "Prestamo",
+        summary: "Obtienes £30 a cambio de bajar ingresos.",
+        discard: "Cualquier carta.",
+        need: "No puedes bajar por debajo de -10.",
+        pay: "Retrocedes 3 niveles de ingresos.",
+        gain: "Recibes £30 del banco.",
+        limit: "No se devuelve despues; el coste real es el frenazo a ingresos.",
+        tags: ["Liquidez inmediata", "Baja ingresos", "Legal y comun en novatos"],
+        mistakes: [
+          "Retrocedes niveles de ingreso, no casillas.",
+          "Un ingreso bajo no te quita PV al final; lo que importa es puntuar mas que los demas.",
+          "Muchos novatos piden pocos prestamos por miedo y se ahogan en tempo."
+        ],
+        advanced: "Si tus ingresos son negativos al final de ronda y no puedes pagar, puedes retirar industrias propias para obtener dinero. Si aun asi no cubres, pierdes PV."
+      },
+      {
+        name: "Explorar",
+        summary: "Convierte cartas de la mano en dos comodines.",
+        discard: "3 cartas en total: 1 por la accion y 2 adicionales.",
+        need: "No tener ya un comodin en mano.",
+        pay: "Las 3 cartas descartadas.",
+        gain: "1 comodin de localizacion y 1 comodin de industria.",
+        limit: "Si ya tienes cualquier comodin en mano, no puedes explorar.",
+        tags: ["Flexibilidad alta", "Cuesta 3 cartas", "Evita manos muertas"],
+        mistakes: [
+          "Los comodines descartados vuelven al area de robo, no a tu descarte.",
+          "Explorar es fuerte cuando tu mano no conecta con tu red ni con el plan de la ronda.",
+          "No te deja saltarte requisitos de recursos o red; solo la carta necesaria."
+        ],
+        advanced: "En una guia de consulta, Explorar suele ser la salida cuando una mano novata no ve una construccion clara."
+      }
+    ];
+
+    const resources = [
+      {
+        title: "Carbon",
+        text: "Necesario para ciertos edificios y para todos los enlaces ferroviarios.",
+        bullets: [
+          "Debe venir de la mina conectada mas cercana sin voltear; si hay empate eliges.",
+          "Si no hay mina conectada, puedes comprar del mercado solo si tienes conexion a un icono de comercio.",
+          "Si el mercado esta vacio, compras a £8 por cubo."
+        ]
+      },
+      {
+        title: "Hierro",
+        text: "Se usa para desarrollar y para algunas construcciones.",
+        bullets: [
+          "Puede venir de cualquier fundicion sin voltear, aunque este lejos.",
+          "No necesita conexion a tu red.",
+          "Si no hay fundiciones disponibles, compras del mercado empezando por lo mas barato; vacio = £6."
+        ]
+      },
+      {
+        title: "Cerveza",
+        text: "Se usa sobre todo al vender y tambien para el doble enlace ferroviario.",
+        bullets: [
+          "Tu propia cerveza no necesita conexion.",
+          "La cerveza de otro jugador si necesita conexion al lugar donde se usa.",
+          "La cerveza del comerciante solo puede usarse al vender a ese comerciante."
+        ]
+      },
+      {
+        title: "Tu red",
+        text: "Una localizacion forma parte de tu red si tiene una de tus industrias o es adyacente a uno de tus enlaces.",
+        bullets: [
+          "Con carta de industria debes construir en tu red.",
+          "Con carta de localizacion puedes saltarte ese requisito para esa ciudad concreta.",
+          "Las rutas para carbón y ventas pueden usar enlaces de cualquier jugador."
+        ]
+      },
+      {
+        title: "Localizaciones conectadas",
+        text: "Dos localizaciones estan conectadas si una ruta de enlaces entre ellas existe, sin importar el color.",
+        bullets: [
+          "Esto importa para ventas, carbón y cerveza de rivales.",
+          "La distancia solo importa al escoger la mina de carbón mas cercana.",
+          "No confundir conectado con formar parte de tu red."
+        ]
+      },
+      {
+        title: "Mercados y comerciantes",
+        text: "Los mercados convierten recursos en dinero y los comerciantes habilitan ventas y a veces carbón.",
+        bullets: [
+          "Las minas conectadas a comercio pueden vender cubos al mercado en el mismo momento de construirse.",
+          "Las fundiciones siempre intentan vender hierro al mercado al construirse.",
+          "Los comerciantes con cerveza pueden dar bonificacion extra si usas ese barril al vender."
+        ]
+      }
+    ];
+
+    const dudasRapidas = [
+      {
+        q: "¿Puedo construir fuera de mi red?",
+        a: "Si usas carta de localizacion concreta o comodin de localizacion, si. Con carta de industria, no: la localizacion debe formar parte de tu red."
+      },
+      {
+        q: "¿Necesito conexion para usar hierro?",
+        a: "No. El hierro puede salir de cualquier fundicion sin voltear del tablero."
+      },
+      {
+        q: "¿Cuando puedo usar cerveza ajena?",
+        a: "Cuando la regla permita cerveza y la cerveceria rival este conectada al lugar donde la necesitas. Tu propia cerveza no pide conexion."
+      },
+      {
+        q: "¿La cerveza del comerciante sirve para enlazar?",
+        a: "No. Solo puede consumirse durante la accion Vender."
+      },
+      {
+        q: "¿Que pasa si me quedo sin dinero con ingresos negativos?",
+        a: "Debes retirar industrias propias para obtener la mitad de su coste, redondeando hacia abajo. Si aun no cubres la deuda, pierdes 1 PV por cada £1 restante."
+      },
+      {
+        q: "¿Puedo repetir la misma accion dos veces?",
+        a: "Si. Dos Construir, dos Enlazar o cualquier combinacion legal."
+      },
+      {
+        q: "¿Las losetas de nivel 1 siempre desaparecen al pasar a ferrocarril?",
+        a: "Si estan en el tablero, si. Todas las industrias de nivel 1 se retiran al final de la era de canales."
+      },
+      {
+        q: "¿Puedo sobreedificar a un rival en cualquier momento?",
+        a: "No. Solo minas de carbón o fundiciones de hierro rivales, y solo si no quedan cubos de ese recurso en tablero ni en mercado."
+      }
+    ];
+
+    const consejosNovato = [
+      "No tengas miedo al prestamo: perder tempo por falta de dinero suele doler mas que bajar ingresos.",
+      "Desarrollar pronto puede hacer que una industria puntue dos veces si sobrevive al corte entre eras.",
+      "Antes de querer vender, asegurate de que tendras acceso real a cerveza.",
+      "En ferrocarril, el cuello de botella suele ser el carbón y la conexion a el.",
+      "Si tu mano no acompaña, Explorar es mejor que desperdiciar acciones poco utiles."
+    ];
+
+    const actionsHost = document.getElementById("actionsHost");
+    const resourcesHost = document.getElementById("resourcesHost");
+    const faqHost = document.getElementById("faqHost");
+    const tipsHost = document.getElementById("tipsHost");
+    const modeSwitch = document.getElementById("modeSwitch");
+    const menuToggle = document.getElementById("menuToggle");
+    const topToolbar = document.getElementById("topToolbar");
+
+    function pillClass(text){
+      if(text.includes("Permitido")) return "ok";
+      if(text.includes("Requiere") || text.includes("consume")) return "need";
+      return "warn";
+    }
+
+    function renderActions(){
+      actionsHost.innerHTML = actions.map((action) => `
+        <article class="action-card">
+          <div class="action-head">
+            <div>
+              <h3>${action.name}</h3>
+              <p>${action.summary}</p>
+            </div>
+            <div class="badge">Accion</div>
+          </div>
+          <div class="action-grid">
+            <div class="facts">
+              <div class="fact"><span class="label">Que descartas</span><div class="value">${action.discard}</div></div>
+              <div class="fact"><span class="label">Que necesitas</span><div class="value">${action.need}</div></div>
+              <div class="fact"><span class="label">Que pagas</span><div class="value">${action.pay}</div></div>
+              <div class="fact"><span class="label">Que ganas</span><div class="value">${action.gain}</div></div>
+              <div class="fact"><span class="label">Limites</span><div class="value">${action.limit}</div></div>
+            </div>
+            <div class="pill-row">
+              ${action.tags.map((tag) => `<div class="pill ${pillClass(tag)}">${tag}</div>`).join("")}
+            </div>
+          </div>
+          <details class="consult-only">
+            <summary>Errores frecuentes</summary>
+            <div class="details-body">
+              <ul class="list">${action.mistakes.map((item) => `<li>${item}</li>`).join("")}</ul>
+            </div>
+          </details>
+          <details class="learn-only">
+            <summary>Excepciones y reglas avanzadas</summary>
+            <div class="details-body">${action.advanced}</div>
+          </details>
+        </article>
+      `).join("");
+    }
+
+    function renderResources(){
+      resourcesHost.innerHTML = resources.map((resource) => `
+        <article class="panel">
+          <h3>${resource.title}</h3>
+          <div class="item">
+            <strong>${resource.text}</strong>
+            <span>${resource.bullets[0]}</span>
+          </div>
+          <ul class="list">
+            ${resource.bullets.slice(1).map((bullet) => `<li>${bullet}</li>`).join("")}
+          </ul>
+        </article>
+      `).join("");
+    }
+
+    function renderFaq(){
+      faqHost.innerHTML = dudasRapidas.map((item) => `
+        <article class="qa">
+          <strong>${item.q}</strong>
+          <span>${item.a}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderTips(){
+      tipsHost.innerHTML = consejosNovato.map((tip) => `
+        <article class="tip">
+          <strong>${tip}</strong>
+        </article>
+      `).join("");
+    }
+
+    function setMode(mode){
+      document.body.classList.toggle("mode-learn", mode === "learn");
+      document.body.classList.toggle("mode-consult", mode === "consult");
+      Array.from(modeSwitch.querySelectorAll("button")).forEach((button) => {
+        button.classList.toggle("active", button.dataset.mode === mode);
+      });
+      localStorage.setItem("brass_mode", mode);
+    }
+
+    function setToolbarVisibility(isVisible){
+      topToolbar.hidden = !isVisible;
+      menuToggle.textContent = isVisible ? "↑" : "↓";
+      menuToggle.setAttribute("aria-expanded", String(isVisible));
+      menuToggle.setAttribute("aria-label", isVisible ? "Ocultar menu" : "Mostrar menu");
+      localStorage.setItem("brass_menu_visible", isVisible ? "1" : "0");
+    }
+
+    renderActions();
+    renderResources();
+    renderFaq();
+    renderTips();
+
+    const savedMode = localStorage.getItem("brass_mode");
+    setMode(savedMode === "consult" ? "consult" : "learn");
+    setToolbarVisibility(localStorage.getItem("brass_menu_visible") !== "0");
+
+    modeSwitch.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-mode]");
+      if(button) setMode(button.dataset.mode);
+    });
+
+    menuToggle.addEventListener("click", () => {
+      setToolbarVisibility(topToolbar.hidden);
+    });
+  </script>
+</body>
+</html>
